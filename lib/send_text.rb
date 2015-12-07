@@ -1,33 +1,22 @@
 require 'twilio-ruby'
+require 'dotenv'
+Dotenv.load
 
 class SendText
 
-  attr_reader :customers
-
-  def confirmation_text
-    sender
+  def initialize
+    @account_sid = ENV['TWILIO_ACCOUNT_SID']
+    @auth_token = ENV['TWILIO_AUTH_TOKEN']
+    @client = Twilio::REST::Client.new(@account_sid, @auth_token)
   end
 
-  private
+  def text_msg
+    time = (Time.now + (60*60)).strftime("%H:%M")
+    @client.account.messages.create(
+      from: '+441457597062',
+      to: ENV['TWILIO_MY_NUMBER'],
+      body: "Thanks for your purchase! Your order will be delivered before #{time}.")
 
-    def sender
-
-      accountSID = 'AC8a18c4b3cf182c308e952100a2a8c1ab'
-      authToken = '5e8d102aef932d5a67bcc4e786e0e084'
-
-      @client = Twilio::REST::Client.new accountSID, authToken
-
-      from = '+447919108936'
-
-      @customers = { '+441233225155' => "Tristan" }
-
-      @customers.each do |key, value|
-        message = @client.account.messages.create(
-          :from => from,
-          :to => key,
-          :body => "Hi #{value}! Your order will be delivered by #{(Time.now + 2700).strftime("%I:%M%p")}. Thanks for ordering with us and enjoy!"
-        )
-        puts "Sent message #{value}"
-      end
-    end
+    "You will receive a text confirming your order."
+  end
 end

@@ -7,7 +7,7 @@ class Menu
   private
 
   def menu_list
-    @dishes = {
+    dishes = {
             Lamb_curry: 4.00,
             Chicken_curry: 4.50,
             Vegetable_curry: 5.00,
